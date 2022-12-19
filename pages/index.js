@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import { DataStore } from "@aws-amplify/datastore";
+import { DataStore } from "aws-amplify";
 import { Post } from '../models';
 import List from '../components/List';
 
