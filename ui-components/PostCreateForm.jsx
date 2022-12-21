@@ -9,8 +9,150 @@ import * as React from "react";
 import { fetchByPath, validateField } from "./utils";
 import { Post } from "../models";
 import { getOverrideProps } from "@aws-amplify/ui-react/internal";
-import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
+import {
+  Badge,
+  Button,
+  Divider,
+  Flex,
+  Grid,
+  Icon,
+  ScrollView,
+  Text,
+  TextField,
+  useTheme,
+} from "@aws-amplify/ui-react";
 import { DataStore } from "aws-amplify";
+function ArrayField({
+  items = [],
+  onChange,
+  label,
+  inputFieldRef,
+  children,
+  hasError,
+  setFieldValue,
+  currentFieldValue,
+  defaultFieldValue,
+}) {
+  const { tokens } = useTheme();
+  const [selectedBadgeIndex, setSelectedBadgeIndex] = React.useState();
+  const [isEditing, setIsEditing] = React.useState();
+  React.useEffect(() => {
+    if (isEditing) {
+      inputFieldRef?.current?.focus();
+    }
+  }, [isEditing]);
+  const removeItem = async (removeIndex) => {
+    const newItems = items.filter((value, index) => index !== removeIndex);
+    await onChange(newItems);
+    setSelectedBadgeIndex(undefined);
+  };
+  const addItem = async () => {
+    if (
+      (currentFieldValue !== undefined ||
+        currentFieldValue !== null ||
+        currentFieldValue !== "") &&
+      !hasError
+    ) {
+      const newItems = [...items];
+      if (selectedBadgeIndex !== undefined) {
+        newItems[selectedBadgeIndex] = currentFieldValue;
+        setSelectedBadgeIndex(undefined);
+      } else {
+        newItems.push(currentFieldValue);
+      }
+      await onChange(newItems);
+      setIsEditing(false);
+    }
+  };
+  return (
+    <React.Fragment>
+      {isEditing && children}
+      {!isEditing ? (
+        <>
+          <Text>{label}</Text>
+          <Button
+            onClick={() => {
+              setIsEditing(true);
+            }}
+          >
+            Add item
+          </Button>
+        </>
+      ) : (
+        <Flex justifyContent="flex-end">
+          {(currentFieldValue || isEditing) && (
+            <Button
+              children="Cancel"
+              type="button"
+              size="small"
+              onClick={() => {
+                setFieldValue(defaultFieldValue);
+                setIsEditing(false);
+                setSelectedBadgeIndex(undefined);
+              }}
+            ></Button>
+          )}
+          <Button
+            size="small"
+            variation="link"
+            color={tokens.colors.brand.primary[80]}
+            isDisabled={hasError}
+            onClick={addItem}
+          >
+            {selectedBadgeIndex !== undefined ? "Save" : "Add"}
+          </Button>
+        </Flex>
+      )}
+      {!!items?.length && (
+        <ScrollView height="inherit" width="inherit" maxHeight={"7rem"}>
+          {items.map((value, index) => {
+            return (
+              <Badge
+                key={index}
+                style={{
+                  cursor: "pointer",
+                  alignItems: "center",
+                  marginRight: 3,
+                  marginTop: 3,
+                  backgroundColor:
+                    index === selectedBadgeIndex ? "#B8CEF9" : "",
+                }}
+                onClick={() => {
+                  setSelectedBadgeIndex(index);
+                  setFieldValue(items[index]);
+                  setIsEditing(true);
+                }}
+              >
+                {value.toString()}
+                <Icon
+                  style={{
+                    cursor: "pointer",
+                    paddingLeft: 3,
+                    width: 20,
+                    height: 20,
+                  }}
+                  viewBox={{ width: 20, height: 20 }}
+                  paths={[
+                    {
+                      d: "M10 10l5.09-5.09L10 10l5.09 5.09L10 10zm0 0L4.91 4.91 10 10l-5.09 5.09L10 10z",
+                      stroke: "black",
+                    },
+                  ]}
+                  ariaLabel="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    removeItem(index);
+                  }}
+                />
+              </Badge>
+            );
+          })}
+        </ScrollView>
+      )}
+      <Divider orientation="horizontal" marginTop={5} />
+    </React.Fragment>
+  );
+}
 export default function PostCreateForm(props) {
   const {
     clearOnSuccess = true,
@@ -26,28 +168,42 @@ export default function PostCreateForm(props) {
   const initialValues = {
     title: undefined,
     description: undefined,
+    subtitle: undefined,
     image: undefined,
+    multipleimage: [],
     slug: undefined,
   };
   const [title, setTitle] = React.useState(initialValues.title);
   const [description, setDescription] = React.useState(
     initialValues.description
   );
+  const [subtitle, setSubtitle] = React.useState(initialValues.subtitle);
   const [image, setImage] = React.useState(initialValues.image);
+  const [multipleimage, setMultipleimage] = React.useState(
+    initialValues.multipleimage
+  );
   const [slug, setSlug] = React.useState(initialValues.slug);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setTitle(initialValues.title);
     setDescription(initialValues.description);
+    setSubtitle(initialValues.subtitle);
     setImage(initialValues.image);
+    setMultipleimage(initialValues.multipleimage);
+    setCurrentMultipleimageValue(undefined);
     setSlug(initialValues.slug);
     setErrors({});
   };
+  const [currentMultipleimageValue, setCurrentMultipleimageValue] =
+    React.useState(undefined);
+  const multipleimageRef = React.createRef();
   const validations = {
     title: [{ type: "Required" }],
     description: [],
-    image: [{ type: "Required" }],
-    slug: [{ type: "Required" }],
+    subtitle: [],
+    image: [],
+    multipleimage: [],
+    slug: [],
   };
   const runValidationTasks = async (fieldName, value) => {
     let validationResponse = validateField(value, validations[fieldName]);
@@ -69,7 +225,9 @@ export default function PostCreateForm(props) {
         let modelFields = {
           title,
           description,
+          subtitle,
           image,
+          multipleimage,
           slug,
         };
         const validationResponses = await Promise.all(
@@ -121,7 +279,9 @@ export default function PostCreateForm(props) {
             const modelFields = {
               title: value,
               description,
+              subtitle,
               image,
+              multipleimage,
               slug,
             };
             const result = onChange(modelFields);
@@ -147,7 +307,9 @@ export default function PostCreateForm(props) {
             const modelFields = {
               title,
               description: value,
+              subtitle,
               image,
+              multipleimage,
               slug,
             };
             const result = onChange(modelFields);
@@ -164,8 +326,8 @@ export default function PostCreateForm(props) {
         {...getOverrideProps(overrides, "description")}
       ></TextField>
       <TextField
-        label="Image"
-        isRequired={true}
+        label="Subtitle"
+        isRequired={false}
         isReadOnly={false}
         onChange={(e) => {
           let { value } = e.target;
@@ -173,7 +335,37 @@ export default function PostCreateForm(props) {
             const modelFields = {
               title,
               description,
+              subtitle: value,
+              image,
+              multipleimage,
+              slug,
+            };
+            const result = onChange(modelFields);
+            value = result?.subtitle ?? value;
+          }
+          if (errors.subtitle?.hasError) {
+            runValidationTasks("subtitle", value);
+          }
+          setSubtitle(value);
+        }}
+        onBlur={() => runValidationTasks("subtitle", subtitle)}
+        errorMessage={errors.subtitle?.errorMessage}
+        hasError={errors.subtitle?.hasError}
+        {...getOverrideProps(overrides, "subtitle")}
+      ></TextField>
+      <TextField
+        label="Image"
+        isRequired={false}
+        isReadOnly={false}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              title,
+              description,
+              subtitle,
               image: value,
+              multipleimage,
               slug,
             };
             const result = onChange(modelFields);
@@ -189,9 +381,56 @@ export default function PostCreateForm(props) {
         hasError={errors.image?.hasError}
         {...getOverrideProps(overrides, "image")}
       ></TextField>
+      <ArrayField
+        onChange={async (items) => {
+          let values = items;
+          if (onChange) {
+            const modelFields = {
+              title,
+              description,
+              subtitle,
+              image,
+              multipleimage: values,
+              slug,
+            };
+            const result = onChange(modelFields);
+            values = result?.multipleimage ?? values;
+          }
+          setMultipleimage(values);
+          setCurrentMultipleimageValue(undefined);
+        }}
+        currentFieldValue={currentMultipleimageValue}
+        label={"Multipleimage"}
+        items={multipleimage}
+        hasError={errors.multipleimage?.hasError}
+        setFieldValue={setCurrentMultipleimageValue}
+        inputFieldRef={multipleimageRef}
+        defaultFieldValue={undefined}
+      >
+        <TextField
+          label="Multipleimage"
+          isRequired={false}
+          isReadOnly={false}
+          value={currentMultipleimageValue}
+          onChange={(e) => {
+            let { value } = e.target;
+            if (errors.multipleimage?.hasError) {
+              runValidationTasks("multipleimage", value);
+            }
+            setCurrentMultipleimageValue(value);
+          }}
+          onBlur={() =>
+            runValidationTasks("multipleimage", currentMultipleimageValue)
+          }
+          errorMessage={errors.multipleimage?.errorMessage}
+          hasError={errors.multipleimage?.hasError}
+          ref={multipleimageRef}
+          {...getOverrideProps(overrides, "multipleimage")}
+        ></TextField>
+      </ArrayField>
       <TextField
         label="Slug"
-        isRequired={true}
+        isRequired={false}
         isReadOnly={false}
         onChange={(e) => {
           let { value } = e.target;
@@ -199,7 +438,9 @@ export default function PostCreateForm(props) {
             const modelFields = {
               title,
               description,
+              subtitle,
               image,
+              multipleimage,
               slug: value,
             };
             const result = onChange(modelFields);
