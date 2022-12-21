@@ -7,13 +7,20 @@
 /* eslint-disable */
 import * as React from "react";
 import { fetchByPath, validateField } from "./utils";
-import { Post } from "../models";
+import { Link } from "../models";
 import { getOverrideProps } from "@aws-amplify/ui-react/internal";
-import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
+import {
+  Button,
+  Flex,
+  Grid,
+  SelectField,
+  TextField,
+} from "@aws-amplify/ui-react";
 import { DataStore } from "aws-amplify";
-export default function PostCreateForm(props) {
+export default function LinkUpdateForm(props) {
   const {
-    clearOnSuccess = true,
+    id,
+    link,
     onSuccess,
     onError,
     onSubmit,
@@ -24,26 +31,36 @@ export default function PostCreateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    title: undefined,
-    description: undefined,
-    image: undefined,
+    Title: {},
+    slug: undefined,
+    linkTitleId: undefined,
   };
-  const [title, setTitle] = React.useState(initialValues.title);
-  const [description, setDescription] = React.useState(
-    initialValues.description
+  const [Title, setTitle] = React.useState(initialValues.Title);
+  const [slug, setSlug] = React.useState(initialValues.slug);
+  const [linkTitleId, setLinkTitleId] = React.useState(
+    initialValues.linkTitleId
   );
-  const [image, setImage] = React.useState(initialValues.image);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    setTitle(initialValues.title);
-    setDescription(initialValues.description);
-    setImage(initialValues.image);
+    const cleanValues = { ...initialValues, ...linkRecord };
+    setTitle(cleanValues.Title);
+    setSlug(cleanValues.slug);
+    setLinkTitleId(cleanValues.linkTitleId);
     setErrors({});
   };
+  const [linkRecord, setLinkRecord] = React.useState(link);
+  React.useEffect(() => {
+    const queryData = async () => {
+      const record = id ? await DataStore.query(Link, id) : link;
+      setLinkRecord(record);
+    };
+    queryData();
+  }, [id, link]);
+  React.useEffect(resetStateValues, [linkRecord]);
   const validations = {
-    title: [],
-    description: [],
-    image: [],
+    Title: [],
+    slug: [],
+    linkTitleId: [],
   };
   const runValidationTasks = async (fieldName, value) => {
     let validationResponse = validateField(value, validations[fieldName]);
@@ -63,9 +80,9 @@ export default function PostCreateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          title,
-          description,
-          image,
+          Title,
+          slug,
+          linkTitleId,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -90,12 +107,13 @@ export default function PostCreateForm(props) {
           modelFields = onSubmit(modelFields);
         }
         try {
-          await DataStore.save(new Post(modelFields));
+          await DataStore.save(
+            Link.copyOf(linkRecord, (updated) => {
+              Object.assign(updated, modelFields);
+            })
+          );
           if (onSuccess) {
             onSuccess(modelFields);
-          }
-          if (clearOnSuccess) {
-            resetStateValues();
           }
         } catch (err) {
           if (onError) {
@@ -104,92 +122,95 @@ export default function PostCreateForm(props) {
         }
       }}
       {...rest}
-      {...getOverrideProps(overrides, "PostCreateForm")}
+      {...getOverrideProps(overrides, "LinkUpdateForm")}
     >
-      <TextField
+      <SelectField
         label="Title"
-        isRequired={false}
-        isReadOnly={false}
+        placeholder="Please select an option"
+        isDisabled={false}
+        value={Title}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              title: value,
-              description,
-              image,
+              Title: value,
+              slug,
+              linkTitleId,
             };
             const result = onChange(modelFields);
-            value = result?.title ?? value;
+            value = result?.Title ?? value;
           }
-          if (errors.title?.hasError) {
-            runValidationTasks("title", value);
+          if (errors.Title?.hasError) {
+            runValidationTasks("Title", value);
           }
           setTitle(value);
         }}
-        onBlur={() => runValidationTasks("title", title)}
-        errorMessage={errors.title?.errorMessage}
-        hasError={errors.title?.hasError}
-        {...getOverrideProps(overrides, "title")}
-      ></TextField>
+        onBlur={() => runValidationTasks("Title", Title)}
+        errorMessage={errors.Title?.errorMessage}
+        hasError={errors.Title?.hasError}
+        {...getOverrideProps(overrides, "Title")}
+      ></SelectField>
       <TextField
-        label="Description"
+        label="Slug"
         isRequired={false}
         isReadOnly={false}
+        defaultValue={slug}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              title,
-              description: value,
-              image,
+              Title,
+              slug: value,
+              linkTitleId,
             };
             const result = onChange(modelFields);
-            value = result?.description ?? value;
+            value = result?.slug ?? value;
           }
-          if (errors.description?.hasError) {
-            runValidationTasks("description", value);
+          if (errors.slug?.hasError) {
+            runValidationTasks("slug", value);
           }
-          setDescription(value);
+          setSlug(value);
         }}
-        onBlur={() => runValidationTasks("description", description)}
-        errorMessage={errors.description?.errorMessage}
-        hasError={errors.description?.hasError}
-        {...getOverrideProps(overrides, "description")}
+        onBlur={() => runValidationTasks("slug", slug)}
+        errorMessage={errors.slug?.errorMessage}
+        hasError={errors.slug?.hasError}
+        {...getOverrideProps(overrides, "slug")}
       ></TextField>
       <TextField
-        label="Image"
+        label="Link title id"
         isRequired={false}
         isReadOnly={false}
+        defaultValue={linkTitleId}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              title,
-              description,
-              image: value,
+              Title,
+              slug,
+              linkTitleId: value,
             };
             const result = onChange(modelFields);
-            value = result?.image ?? value;
+            value = result?.linkTitleId ?? value;
           }
-          if (errors.image?.hasError) {
-            runValidationTasks("image", value);
+          if (errors.linkTitleId?.hasError) {
+            runValidationTasks("linkTitleId", value);
           }
-          setImage(value);
+          setLinkTitleId(value);
         }}
-        onBlur={() => runValidationTasks("image", image)}
-        errorMessage={errors.image?.errorMessage}
-        hasError={errors.image?.hasError}
-        {...getOverrideProps(overrides, "image")}
+        onBlur={() => runValidationTasks("linkTitleId", linkTitleId)}
+        errorMessage={errors.linkTitleId?.errorMessage}
+        hasError={errors.linkTitleId?.hasError}
+        {...getOverrideProps(overrides, "linkTitleId")}
       ></TextField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}
       >
         <Button
-          children="Clear"
+          children="Reset"
           type="reset"
           onClick={resetStateValues}
-          {...getOverrideProps(overrides, "ClearButton")}
+          {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
           gap="15px"

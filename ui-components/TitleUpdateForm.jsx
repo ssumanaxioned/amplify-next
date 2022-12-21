@@ -7,13 +7,14 @@
 /* eslint-disable */
 import * as React from "react";
 import { fetchByPath, validateField } from "./utils";
-import { Post } from "../models";
+import { Title } from "../models";
 import { getOverrideProps } from "@aws-amplify/ui-react/internal";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { DataStore } from "aws-amplify";
-export default function PostCreateForm(props) {
+export default function TitleUpdateForm(props) {
   const {
-    clearOnSuccess = true,
+    id,
+    title,
     onSuccess,
     onError,
     onSubmit,
@@ -24,26 +25,34 @@ export default function PostCreateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    title: undefined,
-    description: undefined,
-    image: undefined,
+    en: undefined,
+    es: undefined,
+    fr: undefined,
   };
-  const [title, setTitle] = React.useState(initialValues.title);
-  const [description, setDescription] = React.useState(
-    initialValues.description
-  );
-  const [image, setImage] = React.useState(initialValues.image);
+  const [en, setEn] = React.useState(initialValues.en);
+  const [es, setEs] = React.useState(initialValues.es);
+  const [fr, setFr] = React.useState(initialValues.fr);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    setTitle(initialValues.title);
-    setDescription(initialValues.description);
-    setImage(initialValues.image);
+    const cleanValues = { ...initialValues, ...titleRecord };
+    setEn(cleanValues.en);
+    setEs(cleanValues.es);
+    setFr(cleanValues.fr);
     setErrors({});
   };
+  const [titleRecord, setTitleRecord] = React.useState(title);
+  React.useEffect(() => {
+    const queryData = async () => {
+      const record = id ? await DataStore.query(Title, id) : title;
+      setTitleRecord(record);
+    };
+    queryData();
+  }, [id, title]);
+  React.useEffect(resetStateValues, [titleRecord]);
   const validations = {
-    title: [],
-    description: [],
-    image: [],
+    en: [],
+    es: [],
+    fr: [],
   };
   const runValidationTasks = async (fieldName, value) => {
     let validationResponse = validateField(value, validations[fieldName]);
@@ -63,9 +72,9 @@ export default function PostCreateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          title,
-          description,
-          image,
+          en,
+          es,
+          fr,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -90,12 +99,13 @@ export default function PostCreateForm(props) {
           modelFields = onSubmit(modelFields);
         }
         try {
-          await DataStore.save(new Post(modelFields));
+          await DataStore.save(
+            Title.copyOf(titleRecord, (updated) => {
+              Object.assign(updated, modelFields);
+            })
+          );
           if (onSuccess) {
             onSuccess(modelFields);
-          }
-          if (clearOnSuccess) {
-            resetStateValues();
           }
         } catch (err) {
           if (onError) {
@@ -104,92 +114,95 @@ export default function PostCreateForm(props) {
         }
       }}
       {...rest}
-      {...getOverrideProps(overrides, "PostCreateForm")}
+      {...getOverrideProps(overrides, "TitleUpdateForm")}
     >
       <TextField
-        label="Title"
+        label="En"
         isRequired={false}
         isReadOnly={false}
+        defaultValue={en}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              title: value,
-              description,
-              image,
+              en: value,
+              es,
+              fr,
             };
             const result = onChange(modelFields);
-            value = result?.title ?? value;
+            value = result?.en ?? value;
           }
-          if (errors.title?.hasError) {
-            runValidationTasks("title", value);
+          if (errors.en?.hasError) {
+            runValidationTasks("en", value);
           }
-          setTitle(value);
+          setEn(value);
         }}
-        onBlur={() => runValidationTasks("title", title)}
-        errorMessage={errors.title?.errorMessage}
-        hasError={errors.title?.hasError}
-        {...getOverrideProps(overrides, "title")}
+        onBlur={() => runValidationTasks("en", en)}
+        errorMessage={errors.en?.errorMessage}
+        hasError={errors.en?.hasError}
+        {...getOverrideProps(overrides, "en")}
       ></TextField>
       <TextField
-        label="Description"
+        label="Es"
         isRequired={false}
         isReadOnly={false}
+        defaultValue={es}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              title,
-              description: value,
-              image,
+              en,
+              es: value,
+              fr,
             };
             const result = onChange(modelFields);
-            value = result?.description ?? value;
+            value = result?.es ?? value;
           }
-          if (errors.description?.hasError) {
-            runValidationTasks("description", value);
+          if (errors.es?.hasError) {
+            runValidationTasks("es", value);
           }
-          setDescription(value);
+          setEs(value);
         }}
-        onBlur={() => runValidationTasks("description", description)}
-        errorMessage={errors.description?.errorMessage}
-        hasError={errors.description?.hasError}
-        {...getOverrideProps(overrides, "description")}
+        onBlur={() => runValidationTasks("es", es)}
+        errorMessage={errors.es?.errorMessage}
+        hasError={errors.es?.hasError}
+        {...getOverrideProps(overrides, "es")}
       ></TextField>
       <TextField
-        label="Image"
+        label="Fr"
         isRequired={false}
         isReadOnly={false}
+        defaultValue={fr}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              title,
-              description,
-              image: value,
+              en,
+              es,
+              fr: value,
             };
             const result = onChange(modelFields);
-            value = result?.image ?? value;
+            value = result?.fr ?? value;
           }
-          if (errors.image?.hasError) {
-            runValidationTasks("image", value);
+          if (errors.fr?.hasError) {
+            runValidationTasks("fr", value);
           }
-          setImage(value);
+          setFr(value);
         }}
-        onBlur={() => runValidationTasks("image", image)}
-        errorMessage={errors.image?.errorMessage}
-        hasError={errors.image?.hasError}
-        {...getOverrideProps(overrides, "image")}
+        onBlur={() => runValidationTasks("fr", fr)}
+        errorMessage={errors.fr?.errorMessage}
+        hasError={errors.fr?.hasError}
+        {...getOverrideProps(overrides, "fr")}
       ></TextField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}
       >
         <Button
-          children="Clear"
+          children="Reset"
           type="reset"
           onClick={resetStateValues}
-          {...getOverrideProps(overrides, "ClearButton")}
+          {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
           gap="15px"

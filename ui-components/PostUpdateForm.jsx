@@ -27,16 +27,19 @@ export default function PostUpdateForm(props) {
   const initialValues = {
     title: undefined,
     description: undefined,
+    image: undefined,
   };
   const [title, setTitle] = React.useState(initialValues.title);
   const [description, setDescription] = React.useState(
     initialValues.description
   );
+  const [image, setImage] = React.useState(initialValues.image);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = { ...initialValues, ...postRecord };
     setTitle(cleanValues.title);
     setDescription(cleanValues.description);
+    setImage(cleanValues.image);
     setErrors({});
   };
   const [postRecord, setPostRecord] = React.useState(post);
@@ -51,6 +54,7 @@ export default function PostUpdateForm(props) {
   const validations = {
     title: [],
     description: [],
+    image: [],
   };
   const runValidationTasks = async (fieldName, value) => {
     let validationResponse = validateField(value, validations[fieldName]);
@@ -72,6 +76,7 @@ export default function PostUpdateForm(props) {
         let modelFields = {
           title,
           description,
+          image,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -124,6 +129,7 @@ export default function PostUpdateForm(props) {
             const modelFields = {
               title: value,
               description,
+              image,
             };
             const result = onChange(modelFields);
             value = result?.title ?? value;
@@ -149,6 +155,7 @@ export default function PostUpdateForm(props) {
             const modelFields = {
               title,
               description: value,
+              image,
             };
             const result = onChange(modelFields);
             value = result?.description ?? value;
@@ -162,6 +169,32 @@ export default function PostUpdateForm(props) {
         errorMessage={errors.description?.errorMessage}
         hasError={errors.description?.hasError}
         {...getOverrideProps(overrides, "description")}
+      ></TextField>
+      <TextField
+        label="Image"
+        isRequired={false}
+        isReadOnly={false}
+        defaultValue={image}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              title,
+              description,
+              image: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.image ?? value;
+          }
+          if (errors.image?.hasError) {
+            runValidationTasks("image", value);
+          }
+          setImage(value);
+        }}
+        onBlur={() => runValidationTasks("image", image)}
+        errorMessage={errors.image?.errorMessage}
+        hasError={errors.image?.hasError}
+        {...getOverrideProps(overrides, "image")}
       ></TextField>
       <Flex
         justifyContent="space-between"
