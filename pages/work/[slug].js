@@ -1,7 +1,7 @@
 import { DataStore } from "aws-amplify";
-import AmplifyImage from "../components/AmplifyImage";
-import Header from "../components/Header";
-import { Post, Link } from "../models";
+import AmplifyImage from "../../components/AmplifyImage";
+import Header from "../../components/Header";
+import { Post, Link } from "../../models";
 
 export async function getStaticProps({ params }) {
   const dataPost = await DataStore.query(Post, c => c.title.eq(params.slug));

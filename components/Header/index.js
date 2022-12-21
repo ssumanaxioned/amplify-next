@@ -11,7 +11,7 @@ const Header = ({ data }) => {
         </Link>
         {
           data.map((item) => (
-            <Link key={item.id} href={item.slug}>
+            <Link key={item.id} href={`/${item.slug}`}>
               <a>
                 {item.slug}
               </a>

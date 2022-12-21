@@ -4,7 +4,55 @@ import { LazyLoading, LazyLoadingDisabled, AsyncItem } from "@aws-amplify/datast
 
 
 
+type EagerSlides = {
+  readonly id?: string | null;
+  readonly title?: string | null;
+  readonly description?: string | null;
+  readonly src?: string | null;
+  readonly ctaText?: string | null;
+  readonly ctaUrl?: string | null;
+}
 
+type LazySlides = {
+  readonly id?: string | null;
+  readonly title?: string | null;
+  readonly description?: string | null;
+  readonly src?: string | null;
+  readonly ctaText?: string | null;
+  readonly ctaUrl?: string | null;
+}
+
+export declare type Slides = LazyLoading extends LazyLoadingDisabled ? EagerSlides : LazySlides
+
+export declare const Slides: (new (init: ModelInit<Slides>) => Slides)
+
+type EagerSlider = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Slider, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly slide?: (Slides | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazySlider = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Slider, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly slide?: (Slides | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Slider = LazyLoading extends LazyLoadingDisabled ? EagerSlider : LazySlider
+
+export declare const Slider: (new (init: ModelInit<Slider>) => Slider) & {
+  copyOf(source: Slider, mutator: (draft: MutableModel<Slider>) => MutableModel<Slider> | void): Slider;
+}
 
 type EagerPostDetail = {
   readonly [__modelMeta__]: {

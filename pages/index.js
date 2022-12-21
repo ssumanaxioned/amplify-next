@@ -1,21 +1,20 @@
 import Head from 'next/head'
 import { DataStore } from "aws-amplify";
-import { Post, Link } from '../models';
-import List from '../components/List';
+import { Link, Slider } from '../models';
 import Header from '../components/Header';
+import BannerSlider from '../components/BannerSlider';
 
 export async function getStaticProps() {
-  const dataPost = await DataStore.query(Post);
   const dataLink = await DataStore.query(Link);
-  const posts = await JSON.parse(JSON.stringify(dataPost));
+  const dataSlider = await DataStore.query(Slider);
   const links = await JSON.parse(JSON.stringify(dataLink));
+  const slider = await JSON.parse(JSON.stringify(dataSlider));
   return {
-    props: { posts, links },
+    props: { links, slider },
   }
 }
 
-export default function Home({ posts, links }) {
-  console.log(posts);
+export default function Home({ links, slider }) {
   return (
     <div>
       <Head>
@@ -24,15 +23,7 @@ export default function Home({ posts, links }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header data={links} />
-      <div className='w-4/5 mx-auto mt-5 flex justify-start items-start flex-wrap gap-5'>
-        {
-          posts && posts.map((post) => {
-            return (
-              <List key={post.id} data={post} />
-            )
-          })
-        }
-      </div>
+      <BannerSlider data={slider} />
     </div>
   )
 }

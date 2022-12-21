@@ -1,3 +1,17 @@
+type Slides {
+  id: ID
+  title: String
+  description: String
+  src: String
+  ctaText: String
+  ctaUrl: String
+}
+
+type Slider @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  slide: [Slides]
+}
+
 type PostDetail @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
@@ -34,4 +48,5 @@ type Post @model @auth(rules: [{allow: public}]) {
   image: String
   multipleimage: [String]
   slug: String
-} 
+}
+ 
