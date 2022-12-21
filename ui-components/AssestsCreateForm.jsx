@@ -7,11 +7,11 @@
 /* eslint-disable */
 import * as React from "react";
 import { fetchByPath, validateField } from "./utils";
-import { Post } from "../models";
+import { Assests } from "../models";
 import { getOverrideProps } from "@aws-amplify/ui-react/internal";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { DataStore } from "aws-amplify";
-export default function PostCreateForm(props) {
+export default function AssestsCreateForm(props) {
   const {
     clearOnSuccess = true,
     onSuccess,
@@ -24,30 +24,16 @@ export default function PostCreateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    title: undefined,
-    description: undefined,
-    image: undefined,
-    slug: undefined,
+    url: undefined,
   };
-  const [title, setTitle] = React.useState(initialValues.title);
-  const [description, setDescription] = React.useState(
-    initialValues.description
-  );
-  const [image, setImage] = React.useState(initialValues.image);
-  const [slug, setSlug] = React.useState(initialValues.slug);
+  const [url, setUrl] = React.useState(initialValues.url);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    setTitle(initialValues.title);
-    setDescription(initialValues.description);
-    setImage(initialValues.image);
-    setSlug(initialValues.slug);
+    setUrl(initialValues.url);
     setErrors({});
   };
   const validations = {
-    title: [{ type: "Required" }],
-    description: [],
-    image: [{ type: "Required" }],
-    slug: [{ type: "Required" }],
+    url: [{ type: "URL" }],
   };
   const runValidationTasks = async (fieldName, value) => {
     let validationResponse = validateField(value, validations[fieldName]);
@@ -67,10 +53,7 @@ export default function PostCreateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          title,
-          description,
-          image,
-          slug,
+          url: url || undefined,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -95,7 +78,7 @@ export default function PostCreateForm(props) {
           modelFields = onSubmit(modelFields);
         }
         try {
-          await DataStore.save(new Post(modelFields));
+          await DataStore.save(new Assests(modelFields));
           if (onSuccess) {
             onSuccess(modelFields);
           }
@@ -109,111 +92,30 @@ export default function PostCreateForm(props) {
         }
       }}
       {...rest}
-      {...getOverrideProps(overrides, "PostCreateForm")}
+      {...getOverrideProps(overrides, "AssestsCreateForm")}
     >
       <TextField
-        label="Title"
-        isRequired={true}
-        isReadOnly={false}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              title: value,
-              description,
-              image,
-              slug,
-            };
-            const result = onChange(modelFields);
-            value = result?.title ?? value;
-          }
-          if (errors.title?.hasError) {
-            runValidationTasks("title", value);
-          }
-          setTitle(value);
-        }}
-        onBlur={() => runValidationTasks("title", title)}
-        errorMessage={errors.title?.errorMessage}
-        hasError={errors.title?.hasError}
-        {...getOverrideProps(overrides, "title")}
-      ></TextField>
-      <TextField
-        label="Description"
+        label="Url"
         isRequired={false}
         isReadOnly={false}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              title,
-              description: value,
-              image,
-              slug,
+              url: value,
             };
             const result = onChange(modelFields);
-            value = result?.description ?? value;
+            value = result?.url ?? value;
           }
-          if (errors.description?.hasError) {
-            runValidationTasks("description", value);
+          if (errors.url?.hasError) {
+            runValidationTasks("url", value);
           }
-          setDescription(value);
+          setUrl(value);
         }}
-        onBlur={() => runValidationTasks("description", description)}
-        errorMessage={errors.description?.errorMessage}
-        hasError={errors.description?.hasError}
-        {...getOverrideProps(overrides, "description")}
-      ></TextField>
-      <TextField
-        label="Image"
-        isRequired={true}
-        isReadOnly={false}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              title,
-              description,
-              image: value,
-              slug,
-            };
-            const result = onChange(modelFields);
-            value = result?.image ?? value;
-          }
-          if (errors.image?.hasError) {
-            runValidationTasks("image", value);
-          }
-          setImage(value);
-        }}
-        onBlur={() => runValidationTasks("image", image)}
-        errorMessage={errors.image?.errorMessage}
-        hasError={errors.image?.hasError}
-        {...getOverrideProps(overrides, "image")}
-      ></TextField>
-      <TextField
-        label="Slug"
-        isRequired={true}
-        isReadOnly={false}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              title,
-              description,
-              image,
-              slug: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.slug ?? value;
-          }
-          if (errors.slug?.hasError) {
-            runValidationTasks("slug", value);
-          }
-          setSlug(value);
-        }}
-        onBlur={() => runValidationTasks("slug", slug)}
-        errorMessage={errors.slug?.errorMessage}
-        hasError={errors.slug?.hasError}
-        {...getOverrideProps(overrides, "slug")}
+        onBlur={() => runValidationTasks("url", url)}
+        errorMessage={errors.url?.errorMessage}
+        hasError={errors.url?.hasError}
+        {...getOverrideProps(overrides, "url")}
       ></TextField>
       <Flex
         justifyContent="space-between"

@@ -1,15 +1,8 @@
 import Head from 'next/head'
-import { DataStore, Storage } from "aws-amplify";
+import { DataStore } from "aws-amplify";
 import { Post, Link } from '../models';
 import List from '../components/List';
 import Header from '../components/Header';
-
-const getImage = async (key) => {
-  const image = await Storage.get(key, {
-    level: "public"
-  })
-  return image
-}
 
 export async function getStaticProps() {
   const dataPost = await DataStore.query(Post);
@@ -22,6 +15,7 @@ export async function getStaticProps() {
 }
 
 export default function Home({ posts, links }) {
+  console.log(posts);
   return (
     <div>
       <Head>

@@ -1,3 +1,18 @@
+type PostDetail @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  subtitle: String
+  description: String
+  images: [String]
+  slug: String
+  Post: Post @hasOne
+}
+
+type Assests @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  url: AWSURL
+}
+
 type Link @model @auth(rules: [{allow: public}]) {
   id: ID!
   Title: Title @hasOne
@@ -13,8 +28,10 @@ type Title @model @auth(rules: [{allow: public}]) {
 
 type Post @model @auth(rules: [{allow: public}]) {
   id: ID!
-  title: String
+  title: String!
   description: String
+  subtitle: String
   image: String
-}
- 
+  multipleimage: [String]
+  slug: String
+} 

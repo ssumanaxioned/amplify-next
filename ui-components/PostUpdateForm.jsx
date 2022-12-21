@@ -28,18 +28,21 @@ export default function PostUpdateForm(props) {
     title: undefined,
     description: undefined,
     image: undefined,
+    slug: undefined,
   };
   const [title, setTitle] = React.useState(initialValues.title);
   const [description, setDescription] = React.useState(
     initialValues.description
   );
   const [image, setImage] = React.useState(initialValues.image);
+  const [slug, setSlug] = React.useState(initialValues.slug);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = { ...initialValues, ...postRecord };
     setTitle(cleanValues.title);
     setDescription(cleanValues.description);
     setImage(cleanValues.image);
+    setSlug(cleanValues.slug);
     setErrors({});
   };
   const [postRecord, setPostRecord] = React.useState(post);
@@ -52,9 +55,10 @@ export default function PostUpdateForm(props) {
   }, [id, post]);
   React.useEffect(resetStateValues, [postRecord]);
   const validations = {
-    title: [],
+    title: [{ type: "Required" }],
     description: [],
-    image: [],
+    image: [{ type: "Required" }],
+    slug: [{ type: "Required" }],
   };
   const runValidationTasks = async (fieldName, value) => {
     let validationResponse = validateField(value, validations[fieldName]);
@@ -77,6 +81,7 @@ export default function PostUpdateForm(props) {
           title,
           description,
           image,
+          slug,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -120,7 +125,7 @@ export default function PostUpdateForm(props) {
     >
       <TextField
         label="Title"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         defaultValue={title}
         onChange={(e) => {
@@ -130,6 +135,7 @@ export default function PostUpdateForm(props) {
               title: value,
               description,
               image,
+              slug,
             };
             const result = onChange(modelFields);
             value = result?.title ?? value;
@@ -156,6 +162,7 @@ export default function PostUpdateForm(props) {
               title,
               description: value,
               image,
+              slug,
             };
             const result = onChange(modelFields);
             value = result?.description ?? value;
@@ -172,7 +179,7 @@ export default function PostUpdateForm(props) {
       ></TextField>
       <TextField
         label="Image"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         defaultValue={image}
         onChange={(e) => {
@@ -182,6 +189,7 @@ export default function PostUpdateForm(props) {
               title,
               description,
               image: value,
+              slug,
             };
             const result = onChange(modelFields);
             value = result?.image ?? value;
@@ -195,6 +203,33 @@ export default function PostUpdateForm(props) {
         errorMessage={errors.image?.errorMessage}
         hasError={errors.image?.hasError}
         {...getOverrideProps(overrides, "image")}
+      ></TextField>
+      <TextField
+        label="Slug"
+        isRequired={true}
+        isReadOnly={false}
+        defaultValue={slug}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              title,
+              description,
+              image,
+              slug: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.slug ?? value;
+          }
+          if (errors.slug?.hasError) {
+            runValidationTasks("slug", value);
+          }
+          setSlug(value);
+        }}
+        onBlur={() => runValidationTasks("slug", slug)}
+        errorMessage={errors.slug?.errorMessage}
+        hasError={errors.slug?.hasError}
+        {...getOverrideProps(overrides, "slug")}
       ></TextField>
       <Flex
         justifyContent="space-between"

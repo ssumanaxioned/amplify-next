@@ -1,34 +1,16 @@
-import { Storage } from "aws-amplify";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import AmplifyImage from "../AmplifyImage";
 
 const List = ({ data }) => {
-  const [image, setImage] = useState("");
-
-  const getImage = async () => {
-    const key = await Storage.get(data.image, {
-      level: 'public'
-    })
-    setImage(key)
-  }
-
-  useEffect(() => {
-    getImage();
-  }, [])
-
   return (
-    <div className="basis-[calc(33.33%-1.25rem)]">
-      <figure className="w-full h-96 relative">
-        <Image
-          layout="fill"
-          objectFit="cover"
-          src={image}
-          alt={data.title}
-        />
-      </figure>
-      <p className="capitalize">{data.title}</p>
-      <p className="capitalize">description: {data.description}</p>
-    </div>
+    <Link href={data.slug}>
+      <div className="basis-[calc(33.33%-1.25rem)] hover:-translate-y-1 transition-transform cursor-pointer">
+        <figure className="w-full h-96 relative">
+          <AmplifyImage data={data.image} />
+        </figure>
+        <p className="capitalize text-xl font-bold">{data.title}</p>
+      </div>
+    </Link>
   )
 }
 
