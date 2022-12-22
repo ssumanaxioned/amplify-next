@@ -13,15 +13,18 @@ export async function getStaticProps({ params }) {
   }
 }
 
-export async function getStaticPaths() {
+export async function getStaticPaths({ locales }) {
   let paths = null;
   const dataPost = await DataStore.query(Post);
   const posts = await JSON.parse(JSON.stringify(dataPost));
 
-  paths = posts.map((post) => ({
-    params: { slug: post.slug },
-  })
-  )
+  paths = posts.map((post) => (
+    locales.map((locale) => ({
+      params: { slug: post.slug },
+      locale
+    }))
+    )
+  ).flat()
 
   return {
     paths,

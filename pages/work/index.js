@@ -13,19 +13,21 @@ export async function getStaticProps() {
   }
 }
 
-const Work =({ posts, links })=> {
-  return(
+const Work = ({ posts, links }) => {
+  return (
     <div>
       <Header data={links} />
-      Work
-      <div className='w-4/5 mx-auto mt-5 flex justify-start items-start flex-wrap gap-5'>
-        {
-          posts && posts.map((post) => {
-            return (
-              <List key={post.id} data={post} />
-            )
-          })
-        }
+      <div className="w-4/5 mx-auto">
+        <h2 className="mt-5 text-4xl font-bold">Work</h2>
+        <div className='mt-5 flex justify-start items-start flex-wrap gap-5'>
+          {
+            posts && posts.map((post) => {
+              return (
+                <List key={post.id} data={post} />
+              )
+            })
+          }
+        </div>
       </div>
     </div>
   )
