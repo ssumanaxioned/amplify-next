@@ -1,177 +1,217 @@
 import { ModelInit, MutableModel, __modelMeta__, ManagedIdentifier } from "@aws-amplify/datastore";
 // @ts-ignore
-import { LazyLoading, LazyLoadingDisabled, AsyncItem } from "@aws-amplify/datastore";
+import { LazyLoading, LazyLoadingDisabled } from "@aws-amplify/datastore";
 
 
 
-
-
-type EagerPostDetail = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<PostDetail, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly title: string;
-  readonly subtitle?: string | null;
-  readonly description?: string | null;
-  readonly images?: (string | null)[] | null;
-  readonly slug?: string | null;
-  readonly Post?: Post | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-  readonly postDetailPostId?: string | null;
+type EagerImageArray = {
+  readonly title?: string | null;
+  readonly imageSrc?: (string | null)[] | null;
+  readonly videoSrc?: (string | null)[] | null;
 }
 
-type LazyPostDetail = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<PostDetail, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly title: string;
-  readonly subtitle?: string | null;
-  readonly description?: string | null;
-  readonly images?: (string | null)[] | null;
-  readonly slug?: string | null;
-  readonly Post: AsyncItem<Post | undefined>;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-  readonly postDetailPostId?: string | null;
+type LazyImageArray = {
+  readonly title?: string | null;
+  readonly imageSrc?: (string | null)[] | null;
+  readonly videoSrc?: (string | null)[] | null;
 }
 
-export declare type PostDetail = LazyLoading extends LazyLoadingDisabled ? EagerPostDetail : LazyPostDetail
+export declare type ImageArray = LazyLoading extends LazyLoadingDisabled ? EagerImageArray : LazyImageArray
 
-export declare const PostDetail: (new (init: ModelInit<PostDetail>) => PostDetail) & {
-  copyOf(source: PostDetail, mutator: (draft: MutableModel<PostDetail>) => MutableModel<PostDetail> | void): PostDetail;
-}
-
-type EagerPost = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Post, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly title: string;
-  readonly description?: string | null;
-  readonly subtitle?: string | null;
-  readonly image?: string | null;
-  readonly multipleimage?: (string | null)[] | null;
-  readonly slug?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyPost = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Post, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly title: string;
-  readonly description?: string | null;
-  readonly subtitle?: string | null;
-  readonly image?: string | null;
-  readonly multipleimage?: (string | null)[] | null;
-  readonly slug?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type Post = LazyLoading extends LazyLoadingDisabled ? EagerPost : LazyPost
-
-export declare const Post: (new (init: ModelInit<Post>) => Post) & {
-  copyOf(source: Post, mutator: (draft: MutableModel<Post>) => MutableModel<Post> | void): Post;
-}
-
-type EagerAssests = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Assests, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly url?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyAssests = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Assests, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly url?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type Assests = LazyLoading extends LazyLoadingDisabled ? EagerAssests : LazyAssests
-
-export declare const Assests: (new (init: ModelInit<Assests>) => Assests) & {
-  copyOf(source: Assests, mutator: (draft: MutableModel<Assests>) => MutableModel<Assests> | void): Assests;
-}
-
-type EagerLink = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Link, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly Title?: Title | null;
-  readonly slug?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-  readonly linkTitleId?: string | null;
-}
-
-type LazyLink = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Link, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly Title: AsyncItem<Title | undefined>;
-  readonly slug?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-  readonly linkTitleId?: string | null;
-}
-
-export declare type Link = LazyLoading extends LazyLoadingDisabled ? EagerLink : LazyLink
-
-export declare const Link: (new (init: ModelInit<Link>) => Link) & {
-  copyOf(source: Link, mutator: (draft: MutableModel<Link>) => MutableModel<Link> | void): Link;
-}
+export declare const ImageArray: (new (init: ModelInit<ImageArray>) => ImageArray)
 
 type EagerTitle = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Title, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
   readonly en?: string | null;
   readonly es?: string | null;
   readonly fr?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
 }
 
 type LazyTitle = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Title, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
   readonly en?: string | null;
   readonly es?: string | null;
   readonly fr?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
 }
 
 export declare type Title = LazyLoading extends LazyLoadingDisabled ? EagerTitle : LazyTitle
 
-export declare const Title: (new (init: ModelInit<Title>) => Title) & {
-  copyOf(source: Title, mutator: (draft: MutableModel<Title>) => MutableModel<Title> | void): Title;
+export declare const Title: (new (init: ModelInit<Title>) => Title)
+
+type EagerDescription = {
+  readonly en?: string | null;
+  readonly es?: string | null;
+  readonly fr?: string | null;
+}
+
+type LazyDescription = {
+  readonly en?: string | null;
+  readonly es?: string | null;
+  readonly fr?: string | null;
+}
+
+export declare type Description = LazyLoading extends LazyLoadingDisabled ? EagerDescription : LazyDescription
+
+export declare const Description: (new (init: ModelInit<Description>) => Description)
+
+type EagerCTA = {
+  readonly en?: string | null;
+  readonly es?: string | null;
+  readonly fr?: string | null;
+  readonly ctaUrl?: string | null;
+}
+
+type LazyCTA = {
+  readonly en?: string | null;
+  readonly es?: string | null;
+  readonly fr?: string | null;
+  readonly ctaUrl?: string | null;
+}
+
+export declare type CTA = LazyLoading extends LazyLoadingDisabled ? EagerCTA : LazyCTA
+
+export declare const CTA: (new (init: ModelInit<CTA>) => CTA)
+
+type EagerLocale = {
+  readonly id?: string | null;
+  readonly title?: string | null;
+  readonly locale?: string | null;
+}
+
+type LazyLocale = {
+  readonly id?: string | null;
+  readonly title?: string | null;
+  readonly locale?: string | null;
+}
+
+export declare type Locale = LazyLoading extends LazyLoadingDisabled ? EagerLocale : LazyLocale
+
+export declare const Locale: (new (init: ModelInit<Locale>) => Locale)
+
+type EagerLinks = {
+  readonly id?: string | null;
+  readonly slug?: string | null;
+  readonly url?: string | null;
+  readonly en?: string | null;
+  readonly es?: string | null;
+  readonly fr?: string | null;
+}
+
+type LazyLinks = {
+  readonly id?: string | null;
+  readonly slug?: string | null;
+  readonly url?: string | null;
+  readonly en?: string | null;
+  readonly es?: string | null;
+  readonly fr?: string | null;
+}
+
+export declare type Links = LazyLoading extends LazyLoadingDisabled ? EagerLinks : LazyLinks
+
+export declare const Links: (new (init: ModelInit<Links>) => Links)
+
+type EagerWork = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Work, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly title?: Title | null;
+  readonly description?: Description | null;
+  readonly bannerImage?: string | null;
+  readonly slug?: string | null;
+  readonly seeAll?: CTA | null;
+  readonly otherWork?: (string | null)[] | null;
+  readonly imageArray?: (ImageArray | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyWork = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Work, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly title?: Title | null;
+  readonly description?: Description | null;
+  readonly bannerImage?: string | null;
+  readonly slug?: string | null;
+  readonly seeAll?: CTA | null;
+  readonly otherWork?: (string | null)[] | null;
+  readonly imageArray?: (ImageArray | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Work = LazyLoading extends LazyLoadingDisabled ? EagerWork : LazyWork
+
+export declare const Work: (new (init: ModelInit<Work>) => Work) & {
+  copyOf(source: Work, mutator: (draft: MutableModel<Work>) => MutableModel<Work> | void): Work;
+}
+
+type EagerSlider = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Slider, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly Page?: string | null;
+  readonly title?: Title | null;
+  readonly description?: Description | null;
+  readonly videoSrc?: string | null;
+  readonly imageSrc?: string | null;
+  readonly cta?: CTA | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazySlider = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Slider, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly Page?: string | null;
+  readonly title?: Title | null;
+  readonly description?: Description | null;
+  readonly videoSrc?: string | null;
+  readonly imageSrc?: string | null;
+  readonly cta?: CTA | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Slider = LazyLoading extends LazyLoadingDisabled ? EagerSlider : LazySlider
+
+export declare const Slider: (new (init: ModelInit<Slider>) => Slider) & {
+  copyOf(source: Slider, mutator: (draft: MutableModel<Slider>) => MutableModel<Slider> | void): Slider;
+}
+
+type EagerHeader = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Header, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly links?: (Links | null)[] | null;
+  readonly locale?: (Locale | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyHeader = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Header, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly links?: (Links | null)[] | null;
+  readonly locale?: (Locale | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Header = LazyLoading extends LazyLoadingDisabled ? EagerHeader : LazyHeader
+
+export declare const Header: (new (init: ModelInit<Header>) => Header) & {
+  copyOf(source: Header, mutator: (draft: MutableModel<Header>) => MutableModel<Header> | void): Header;
 }
