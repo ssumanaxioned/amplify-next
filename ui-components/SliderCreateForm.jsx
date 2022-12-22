@@ -27,21 +27,29 @@ export default function SliderCreateForm(props) {
     Page: undefined,
     videoSrc: undefined,
     imageSrc: undefined,
+    workImage: undefined,
+    slug: undefined,
   };
   const [Page, setPage] = React.useState(initialValues.Page);
   const [videoSrc, setVideoSrc] = React.useState(initialValues.videoSrc);
   const [imageSrc, setImageSrc] = React.useState(initialValues.imageSrc);
+  const [workImage, setWorkImage] = React.useState(initialValues.workImage);
+  const [slug, setSlug] = React.useState(initialValues.slug);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setPage(initialValues.Page);
     setVideoSrc(initialValues.videoSrc);
     setImageSrc(initialValues.imageSrc);
+    setWorkImage(initialValues.workImage);
+    setSlug(initialValues.slug);
     setErrors({});
   };
   const validations = {
     Page: [],
     videoSrc: [],
     imageSrc: [],
+    workImage: [],
+    slug: [],
   };
   const runValidationTasks = async (fieldName, value) => {
     let validationResponse = validateField(value, validations[fieldName]);
@@ -64,6 +72,8 @@ export default function SliderCreateForm(props) {
           Page,
           videoSrc,
           imageSrc,
+          workImage,
+          slug,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -115,6 +125,8 @@ export default function SliderCreateForm(props) {
               Page: value,
               videoSrc,
               imageSrc,
+              workImage,
+              slug,
             };
             const result = onChange(modelFields);
             value = result?.Page ?? value;
@@ -140,6 +152,8 @@ export default function SliderCreateForm(props) {
               Page,
               videoSrc: value,
               imageSrc,
+              workImage,
+              slug,
             };
             const result = onChange(modelFields);
             value = result?.videoSrc ?? value;
@@ -165,6 +179,8 @@ export default function SliderCreateForm(props) {
               Page,
               videoSrc,
               imageSrc: value,
+              workImage,
+              slug,
             };
             const result = onChange(modelFields);
             value = result?.imageSrc ?? value;
@@ -178,6 +194,60 @@ export default function SliderCreateForm(props) {
         errorMessage={errors.imageSrc?.errorMessage}
         hasError={errors.imageSrc?.hasError}
         {...getOverrideProps(overrides, "imageSrc")}
+      ></TextField>
+      <TextField
+        label="Work image"
+        isRequired={false}
+        isReadOnly={false}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              Page,
+              videoSrc,
+              imageSrc,
+              workImage: value,
+              slug,
+            };
+            const result = onChange(modelFields);
+            value = result?.workImage ?? value;
+          }
+          if (errors.workImage?.hasError) {
+            runValidationTasks("workImage", value);
+          }
+          setWorkImage(value);
+        }}
+        onBlur={() => runValidationTasks("workImage", workImage)}
+        errorMessage={errors.workImage?.errorMessage}
+        hasError={errors.workImage?.hasError}
+        {...getOverrideProps(overrides, "workImage")}
+      ></TextField>
+      <TextField
+        label="Slug"
+        isRequired={false}
+        isReadOnly={false}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              Page,
+              videoSrc,
+              imageSrc,
+              workImage,
+              slug: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.slug ?? value;
+          }
+          if (errors.slug?.hasError) {
+            runValidationTasks("slug", value);
+          }
+          setSlug(value);
+        }}
+        onBlur={() => runValidationTasks("slug", slug)}
+        errorMessage={errors.slug?.errorMessage}
+        hasError={errors.slug?.hasError}
+        {...getOverrideProps(overrides, "slug")}
       ></TextField>
       <Flex
         justifyContent="space-between"

@@ -16,11 +16,15 @@ export declare type SliderCreateFormInputValues = {
     Page?: string;
     videoSrc?: string;
     imageSrc?: string;
+    workImage?: string;
+    slug?: string;
 };
 export declare type SliderCreateFormValidationValues = {
     Page?: ValidationFunction<string>;
     videoSrc?: ValidationFunction<string>;
     imageSrc?: ValidationFunction<string>;
+    workImage?: ValidationFunction<string>;
+    slug?: ValidationFunction<string>;
 };
 export declare type FormProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type SliderCreateFormOverridesProps = {
@@ -28,6 +32,8 @@ export declare type SliderCreateFormOverridesProps = {
     Page?: FormProps<TextFieldProps>;
     videoSrc?: FormProps<TextFieldProps>;
     imageSrc?: FormProps<TextFieldProps>;
+    workImage?: FormProps<TextFieldProps>;
+    slug?: FormProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type SliderCreateFormProps = React.PropsWithChildren<{
     overrides?: SliderCreateFormOverridesProps | undefined | null;

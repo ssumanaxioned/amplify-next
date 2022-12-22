@@ -29,6 +29,9 @@ type Slider @model @auth(rules: [{allow: public}]) {
   videoSrc: String
   imageSrc: String
   cta: CTA
+  workImage: String
+  imageArray: [ImageArray]
+  slug: String
 }
 
 type CTA {

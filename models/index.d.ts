@@ -160,6 +160,9 @@ type EagerSlider = {
   readonly videoSrc?: string | null;
   readonly imageSrc?: string | null;
   readonly cta?: CTA | null;
+  readonly workImage?: string | null;
+  readonly imageArray?: (ImageArray | null)[] | null;
+  readonly slug?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -176,6 +179,9 @@ type LazySlider = {
   readonly videoSrc?: string | null;
   readonly imageSrc?: string | null;
   readonly cta?: CTA | null;
+  readonly workImage?: string | null;
+  readonly imageArray?: (ImageArray | null)[] | null;
+  readonly slug?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

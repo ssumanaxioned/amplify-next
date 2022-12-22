@@ -17,11 +17,15 @@ export declare type SliderUpdateFormInputValues = {
     Page?: string;
     videoSrc?: string;
     imageSrc?: string;
+    workImage?: string;
+    slug?: string;
 };
 export declare type SliderUpdateFormValidationValues = {
     Page?: ValidationFunction<string>;
     videoSrc?: ValidationFunction<string>;
     imageSrc?: ValidationFunction<string>;
+    workImage?: ValidationFunction<string>;
+    slug?: ValidationFunction<string>;
 };
 export declare type FormProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type SliderUpdateFormOverridesProps = {
@@ -29,6 +33,8 @@ export declare type SliderUpdateFormOverridesProps = {
     Page?: FormProps<TextFieldProps>;
     videoSrc?: FormProps<TextFieldProps>;
     imageSrc?: FormProps<TextFieldProps>;
+    workImage?: FormProps<TextFieldProps>;
+    slug?: FormProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type SliderUpdateFormProps = React.PropsWithChildren<{
     overrides?: SliderUpdateFormOverridesProps | undefined | null;
