@@ -25,7 +25,7 @@ const Navbar = ({ data }) => {
                 <a key={link.url} href={link.url}>
                   {link[locale]}
                 </a> :
-                <Link key={link.slug} href={link.slug}>
+                <Link key={link.slug} href={`/${link.slug}`}>
                   <a>
                     {link[locale]}
                   </a>
