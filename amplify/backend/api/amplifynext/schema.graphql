@@ -1,3 +1,15 @@
+type Pages @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  slug: String
+  title: String
+  Works: [Work] @hasMany(indexName: "byPages", fields: ["id"])
+}
+
+type About @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Works: [Work] @hasMany(indexName: "byAbout", fields: ["id"])
+}
+
 type ImageArray {
   title: String
   imageSrc: [String]
@@ -13,6 +25,8 @@ type Work @model @auth(rules: [{allow: public}]) {
   seeAll: CTA
   otherWork: [String]
   imageArray: [ImageArray]
+  aboutID: ID! @index(name: "byAbout")
+  pagesID: ID! @index(name: "byPages")
 }
 
 type Description {

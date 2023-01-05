@@ -4,16 +4,18 @@ import { schema } from './schema';
 
 
 
-const { Work, Slider, Header, ImageArray, Title, Description, CTA, Locale, Links } = initSchema(schema);
+const { Pages, Work, About, Slider, Header, Title, Description, CTA, ImageArray, Locale, Links } = initSchema(schema);
 
 export {
+  Pages,
   Work,
+  About,
   Slider,
   Header,
-  ImageArray,
   Title,
   Description,
   CTA,
+  ImageArray,
   Locale,
   Links
 };
