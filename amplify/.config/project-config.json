@@ -2,13 +2,13 @@
   "providers": [
     "awscloudformation"
   ],
-  "projectName": "amplifynext",
+  "projectName": "amplifynextshutterst",
   "version": "3.1",
   "frontend": "javascript",
   "javascript": {
     "framework": "react",
     "config": {
-      "SourceDir": ".",
+      "SourceDir": "",
       "DistributionDir": "build",
       "BuildCommand": "npm.cmd run-script build",
       "StartCommand": "npm.cmd run-script start"
